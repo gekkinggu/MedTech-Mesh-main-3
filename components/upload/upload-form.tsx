@@ -1,110 +1,90 @@
 "use client"
 
-import * as React from "react"
-import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, RootState } from '@/lib/store'
-import { 
-  setFiles, 
-  setCoverImage, 
-  setModelPictures, 
-  updateModelInformation,
-  setUploading,
-  setUploadProgress,
-  resetUpload,
-  setModelFile,
-  setLoading
-} from '@/lib/features/upload/uploadSlice'
-import { Button } from "@/components/ui/button"
-import { FileUploadArea } from "./file-upload-area"
-import { ModelPicturesSection } from "./model-pictures-section"
-import { ModelInformationSection } from "./model-information-section"
+import React, { useState } from "react";
+import { useDispatch } from 'react-redux';
+import { setUploading, setUploadProgress, resetUpload } from '@/lib/features/upload/uploadSlice';
 
 export function UploadForm() {
-  const dispatch = useDispatch<AppDispatch>()
-  const { 
-    files, 
-    coverImage, 
-    modelPictures, 
-    modelFile,
-    modelInformation, 
-    uploading, 
-    uploadProgress 
-  } = useSelector((state: RootState) => state.upload)
+  const dispatch = useDispatch();
 
-  const handleFilesChange = (newFiles: any[]) => {
-    dispatch(setFiles(newFiles))
-  }
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [username, setUsername] = useState("");
+  const [category, setCategory] = useState("");
+  const [description, setDescription] = useState("");
+  const [license, setLicense] = useState("");
+  const [tags, setTags] = useState("");
+  const [modelFile, setModelFile] = useState<File | null>(null);
+  const [previewImage, setPreviewImage] = useState<File | null>(null);
+  const [images, setImages] = useState<FileList | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
 
-  const handleCoverChange = (file: File | null) => {
-    dispatch(setCoverImage(file))
-  }
+  const handlePublish = async (e: React.FormEvent) => {
+    e.preventDefault();
+    dispatch(setUploading(true));
+    setMessage(null);
 
-  const handlePicturesChange = (pictures: File[]) => {
-    dispatch(setModelPictures(pictures))
-  }
-
-  const handleModelFileChange = (file: File | null) => {
-    dispatch(setModelFile(file))
-  }
-
-  const handleInformationChange = (data: any) => {
-    dispatch(updateModelInformation(data))
-  }
-
-  const handlePublish = async () => {
-    dispatch(setUploading(true))
-    
     try {
-      // Simulate upload progress
-      for (let i = 0; i <= 100; i += 10) {
-        dispatch(setUploadProgress(i))
-        await new Promise(resolve => setTimeout(resolve, 200))
+      const formData = new FormData();
+      formData.append("title", title);
+      if (author) formData.append("author", author);
+      if (username) formData.append("username", username);
+      if (category) formData.append("category", category);
+      if (description) formData.append("description", description);
+      if (license) formData.append("license", license);
+      if (tags) formData.append("tags", tags);
+      if (modelFile) formData.append("modelFile", modelFile);
+      if (previewImage) formData.append("previewImage", previewImage);
+      if (images) {
+        Array.from(images).forEach((file) => {
+          formData.append("images", file);
+        });
       }
-      
-      // Handle actual upload logic here
-      console.log("Publishing model:", {
-        files,
-        coverImage,
-        modelPictures,
-        modelFile,
-        information: modelInformation
-      })
-      
-      // Reset form after successful upload
-      dispatch(resetUpload())
-      
-    } catch (error) {
-      console.error("Upload failed:", error)
+
+      const res = await fetch("/api/product/add", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setMessage("Upload successful!");
+        dispatch(resetUpload());
+        // Optionally redirect or clear form here
+      } else {
+        setMessage("Upload failed: " + data.message);
+      }
+    } catch (error: any) {
+      setMessage("Upload failed: " + error.message);
     } finally {
-      dispatch(setUploading(false))
-      dispatch(setUploadProgress(0))
+      dispatch(setUploading(false));
+      dispatch(setUploadProgress(0));
     }
-  }
+  };
 
   return (
-    <>
-      <div className="space-y-6">
-        <FileUploadArea onFilesChange={handleFilesChange} />
-        <ModelPicturesSection 
-          onCoverChange={handleCoverChange}
-          onPicturesChange={handlePicturesChange}
-          onModelFileChange={handleModelFileChange}
-        />
-        <ModelInformationSection onDataChange={handleInformationChange} />
-      </div>
-      
-      <div className="fixed bottom-0 left-0 right-0 bg-background border-t shadow-lg z-50">
-        <div className="flex justify-center py-4 px-[52px]">
-          <Button 
-            size="lg" 
-            className="px-12 py-3 text-lg font-medium bg-blue-600 hover:bg-blue-700 text-white shadow-md"
-            onClick={handlePublish}
-            disabled={uploading || files.length === 0}
-          >
-            {uploading ? `Publishing... ${uploadProgress}%` : 'Publish'}
-          </Button>
-        </div>
-      </div>
-    </>
-  )
+    <form onSubmit={handlePublish} className="space-y-4">
+      <input type="text" placeholder="Title*" value={title} onChange={e => setTitle(e.target.value)} required className="input" />
+      <input type="text" placeholder="Author" value={author} onChange={e => setAuthor(e.target.value)} className="input" />
+      <input type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} className="input" />
+      <input type="text" placeholder="Category" value={category} onChange={e => setCategory(e.target.value)} className="input" />
+      <textarea placeholder="Description" value={description} onChange={e => setDescription(e.target.value)} className="input" />
+      <input type="text" placeholder="License" value={license} onChange={e => setLicense(e.target.value)} className="input" />
+      <input type="text" placeholder="Tags (comma separated)" value={tags} onChange={e => setTags(e.target.value)} className="input" />
+      <label>
+        3D Model File (.stl, .obj, etc)
+        <input type="file" accept=".stl,.obj" onChange={e => setModelFile(e.target.files?.[0] || null)} />
+      </label>
+      <label>
+        Preview Image
+        <input type="file" accept="image/*" onChange={e => setPreviewImage(e.target.files?.[0] || null)} />
+      </label>
+      <label>
+        Additional Images
+        <input type="file" accept="image/*" multiple onChange={e => setImages(e.target.files)} />
+      </label>
+      <button type="submit" className="btn btn-primary">Publish</button>
+      {message && <div>{message}</div>}
+    </form>
+  );
 }

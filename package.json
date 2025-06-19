@@ -23,6 +23,7 @@
     "@reduxjs/toolkit": "^2.8.2",
     "@types/three": "^0.177.0",
     "class-variance-authority": "^0.7.1",
+    "cloudinary": "^2.7.0",
     "clsx": "^2.1.1",
     "inngest": "^3.39.2",
     "lucide-react": "^0.516.0",
