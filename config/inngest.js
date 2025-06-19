@@ -1,7 +1,6 @@
-import { connect } from "http2";
 import { Inngest } from "inngest";
-import { User } from "lucide-react";
-import connectDB from "./db.js"
+import connectDB from "./db";
+import User from "@/models/User";
 
 // Create a client to send and receive events
 export const inngest = new Inngest({ id: "my-app" });
