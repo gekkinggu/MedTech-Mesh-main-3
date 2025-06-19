@@ -1,6 +1,6 @@
 import { connect } from "http2";
 import { Inngest } from "inngest";
-import { User } from "lucide-react";
+import User from "@/models/User";
 import connectDB from "./db.js"
 
 // Create a client to send and receive events
