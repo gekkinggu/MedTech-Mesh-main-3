@@ -14,9 +14,19 @@ cloudinary.config({
 async function uploadToCloudinary(file, options = {}) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
+
+    // Get the original filename (with extension)
+    const originalName = file.name || `model_${Date.now()}.stl`;
+    const publicId = originalName.replace(/\.[^/.]+$/, ""); // remove extension for Cloudinary, will add it back
+
     return new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
-            options,
+            {
+                ...options,
+                resource_type: "raw",
+                public_id: publicId, // this will keep the filename in the URL
+                format: originalName.split('.').pop() // force the extension
+            },
             (error, result) => {
                 if (error) reject(error);
                 else resolve(result.secure_url);

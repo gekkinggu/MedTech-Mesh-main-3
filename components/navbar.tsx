@@ -58,7 +58,7 @@ export function Navbar({ onLogin, onLogout }: NavbarProps) {
     const timestamp = Date.now()
     
     return Array.from({ length: 8 }, (_, i) => ({
-      id: `search-${query}-initial-${i}-${timestamp}`, // More unique ID pattern
+      id: `search-${query}-initial-${i}`,
       title: `${query} Model ${i + 1}`,
       author: `${categories[i % categories.length]} Author`,
       downloads: Math.floor(Math.random() * 800) + 200,

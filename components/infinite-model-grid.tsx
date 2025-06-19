@@ -27,9 +27,8 @@ export function InfiniteModelGrid({ title, onModelClick }: InfiniteModelGridProp
 
   // Generate sample data for pagination with unique IDs
   const generateMoreModels = (page: number) => {
-    const timestamp = Date.now()
     return Array.from({ length: 8 }, (_, i) => ({
-      id: `other-page-${page}-item-${i}-${timestamp}`, // More unique ID pattern
+      id: `other-page-${page}-item-${i}`,
       title: `Other Model ${page}-${i + 1}`,
       author: `Author ${page}`,
       downloads: Math.floor(Math.random() * 500) + 100,
@@ -115,7 +114,6 @@ export function InfiniteModelGrid({ title, onModelClick }: InfiniteModelGridProp
             author={model.author}
             downloads={model.downloads}
             likes={model.likes}
-            imageUrl={model.imageUrl}
             onClick={() => handleModelClick(model)}
             onLike={() => handleLike(model.id, model.likes)}
           />
@@ -125,7 +123,7 @@ export function InfiniteModelGrid({ title, onModelClick }: InfiniteModelGridProp
         {otherModelsLoading && (
           <>
             {Array.from({ length: 8 }).map((_, index) => (
-              <ModelCardSkeleton key={`infinite-skeleton-${otherModelsPage}-${index}-${Date.now()}`} />
+              <ModelCardSkeleton key={`infinite-skeleton-${otherModelsPage}-${index}`} />
             ))}
           </>
         )}

@@ -10,7 +10,7 @@ interface Model {
   author: string
   downloads: number
   likes: number
-  imageUrl?: string
+  previewImage?: string
 }
 
 interface ModelGridProps {
@@ -50,7 +50,7 @@ export function ModelGrid({ title, models, onModelClick }: ModelGridProps) {
             author={model.author}
             downloads={model.downloads}
             likes={model.likes}
-            imageUrl={model.imageUrl}
+            previewImage={model.previewImage}
             onClick={() => handleModelClick(model)}
             onLike={() => handleLike(model.id, model.likes)}
           />

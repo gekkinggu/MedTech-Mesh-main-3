@@ -6,7 +6,7 @@ interface ModelCardProps {
   author: string
   downloads: number
   likes: number
-  imageUrl?: string
+  previewImage?: string
   onClick?: () => void
   onLike?: () => void
 }
@@ -16,7 +16,7 @@ export function ModelCard({
   author, 
   downloads, 
   likes, 
-  imageUrl, 
+  previewImage, 
   onClick, 
   onLike 
 }: ModelCardProps) {
@@ -29,9 +29,9 @@ export function ModelCard({
     <div className="group cursor-pointer w-[300px]" onClick={onClick}>
       {/* Model Preview */}
       <div className="w-full aspect-[300/225] bg-[#C4C4C4] rounded-[4px] overflow-hidden mb-4">
-        {imageUrl ? (
+        {previewImage ? (
           <img 
-            src={imageUrl} 
+            src={previewImage} 
             alt={title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform"
           />

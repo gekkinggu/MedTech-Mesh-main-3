@@ -37,7 +37,7 @@ export function SearchModelGrid({ onModelClick }: SearchModelGridProps) {
     const categories = ['Cardiology', 'Neurology', 'Orthopedics', 'General', 'Surgery']
     
     return Array.from({ length: 8 }, (_, i) => ({
-      id: `search-${query}-page-${page}-item-${i}-${Date.now()}`, // Make IDs more unique
+      id: `search-${query}-page-${page}-item-${i}`,
       title: `${query} Model ${page}-${i + 1}`,
       author: `${categories[i % categories.length]} Author`,
       downloads: Math.floor(Math.random() * 800) + 200,
@@ -150,7 +150,6 @@ export function SearchModelGrid({ onModelClick }: SearchModelGridProps) {
             author={model.author}
             downloads={model.downloads}
             likes={model.likes}
-            imageUrl={model.imageUrl}
             onClick={() => handleModelClick(model)}
             onLike={() => handleLike(model.id, model.likes)}
           />
@@ -160,7 +159,7 @@ export function SearchModelGrid({ onModelClick }: SearchModelGridProps) {
         {searchLoading && (
           <>
             {Array.from({ length: 8 }).map((_, index) => (
-              <ModelCardSkeleton key={`search-skeleton-${searchQuery}-${searchPage}-${index}-${Date.now()}`} />
+              <ModelCardSkeleton key={`search-skeleton-${searchQuery}-${searchPage}-${index}`} />
             ))}
           </>
         )}

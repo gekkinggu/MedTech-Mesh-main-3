@@ -30,7 +30,7 @@ export function EditFileUploadArea({ onFilesChange }: EditFileUploadAreaProps) {
 
   const handleFileSelect = (files: FileList) => {
     const newFiles: UploadedFile[] = Array.from(files).map((file, index) => ({
-      id: `${Date.now()}-${index}`,
+      id: `${file.name}-${file.size}-${index}`,
       name: file.name,
       size: file.size,
       type: file.type
